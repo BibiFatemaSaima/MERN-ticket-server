@@ -62,18 +62,14 @@ app.post("/users", async (req, res) => {
     res.status(500).send({ error: "User save failed" });
   }
 });
-// CREATE USER
-app.post("/users", async (req, res) => {
-  try {
-    const user = req.body;
+    // Manage Users
+    app.get("/users", async (req, res) => {
 
-    const result = await usersCollection.insertOne(user);
+    const result = await usersCollection.find().toArray();
 
     res.send(result);
-  } catch (error) {
-    res.status(500).send({ error: "User insert failed" });
-  }
-});
+
+    });
     // single booking fetch (Payment page এর জন্য)
     app.get("/booking/:id", async (req, res) => {
       const id = req.params.id;
@@ -375,6 +371,26 @@ app.get("/vendor/revenue/:email", async (req, res) => {
 
   res.send(result);
     });
+    // Make Vendor
+    app.patch("/users/vendor/:id", async (req, res) => {
+
+  const id = req.params.id;
+
+  const result = await usersCollection.updateOne(
+
+    { _id: new ObjectId(id) },
+
+    {
+      $set: {
+        role: "vendor"
+      }
+    }
+
+  );
+
+  res.send(result);
+
+});
     // make tickets for approved tickets api
     app.patch("/tickets/approve/:id", async (req, res) => {
   const id = req.params.id;
